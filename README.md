@@ -22,6 +22,9 @@
 ```
 
 
+# The Bot Army
+Described [here](https://square-root.atlassian.net/wiki/display/TPI/Put+a+Bot+on+It%3A+SR+Bot+Army).
+
 # Creating bots.
 
 ## The easy way.
