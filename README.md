@@ -40,6 +40,11 @@ Clone one of the templates and go to town.
 ### Clone a template bot in your favorite language
 If it doesn't exist, add it. We need a haskell-bot, for example...
 
+### update the env folder
+Python supports the concept of "versioning" the distribution--this is stored in the requirements.txt file. If you want to work in a different language or a different version of python, you should add the relevant environment artifacts in the env folder.
+
+*Note!* Store all unversioned environment artifacts in a folder called src--these are ignored by version control.
+
 ### Build-a-bot
 Code.
 
