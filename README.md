@@ -22,8 +22,12 @@
 ```
 
 
-Creating bots.
+# Creating bots.
 
-The easy way.
+## The easy way.
 
-The hard way.
+Extend legion-bot.
+
+## The hard way.
+
+Clone one of the templates and go to town.
