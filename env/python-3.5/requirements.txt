@@ -4,6 +4,7 @@ itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
 requests==2.10.0
+simplejson==3.8.2
 six==1.10.0
 slackclient==1.0.1
 websocket-client==0.37.0
