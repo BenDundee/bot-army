@@ -1,0 +1,10 @@
+{
+    "bot_army": [
+        {
+            "name": "CalmBot",
+            "bot_location": "calm-bot",
+            "init_script": "bin/launch.sh"
+        }
+
+    ]
+}
