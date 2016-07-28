@@ -1,9 +1,25 @@
 #!
+# -*- coding: utf-8 -*-
+
 from flask import Flask, request, Response
 import os
 from slackclient import SlackClient
 
-from barracks.util import get_slack_creds
+
+
+def get_slack_creds(base_path):
+    """
+    Store config.private files in your bot's config folder--make sure they are .gitignore'd.
+
+    Example usage: get_slack_creds(__file__)
+
+    :param base_path:
+    :return: dict[str, str]
+    """
+    return {
+        "SLACK_TOKEN": os.environ.get("SLACK_TOKEN"),
+        "SLACK_WEBHOOK_SECRET": os.environ.get("SLACK_WEBHOOK_SECRET")
+    }
 
 
 app = Flask(__name__)
@@ -38,4 +54,7 @@ def inbound():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
+
+
