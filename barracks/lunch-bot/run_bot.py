@@ -1,4 +1,4 @@
-from .bot import Recommender, responses, DataLoader
+from bot import Recommender, responses, DataLoader
 from barracks.util import get_canned_header, get_logger, get_default_root_logger, get_path
 
 from flask import request, Response, Flask
@@ -10,9 +10,10 @@ BASE_PATH = os.path.dirname(os.path.realpath(__file__))
 MY_BOT_IS_CALLED = "lunch-bot"
 
 
-def return_help():
+def return_help(user):
     return {
-        "text": "lunch-bot did not understand you. lunch-bot accepts the following requests:",
+        "text": "Hello @{0}! Lunch-bot did not understand you. lunch-bot accepts the following requests:"
+            .format(user),
         "attachments": [
             {"text": "Returns your ratings for a restaurant: lunch-bot ratings <restaurant_name>"},
             {"text": "Returns optimal lunch groups: lunch-bot find optimal groups"},
@@ -33,16 +34,16 @@ def parse_message(msg, user):
 
     # Assume: lunch-bot find optimal groups
     elif bits[1] == "find" and bits[2] == "optimal":
-        out = responses("find_optimal_groups", rm)
+        out = responses("find_optimal_groups", recommender=rm)
 
     # Assume: lunch-bot find restaurant @user1 @user2 @user3
     elif bits[1] == "find" and bits[2] == "restaurant":
-        users = [x.strip('@') for x in bits[2:]]
+        users = [x.strip('@') for x in bits[3:]]
         users.append(user)
-        out = responses("find_restaurant", rm, users)
+        out = responses("find_optimal_restaurant", recommender=rm, users=users)
 
     else:
-        out = return_help()
+        out = return_help(user)
 
     return out
 
@@ -51,7 +52,7 @@ def parse_message(msg, user):
 def router():
 
     _logger = get_logger(__name__)
-    if request.form.get("token") == os.environ.get("SLACK_TOKEN"):
+    if request.form.get("token") == os.environ.get("SLACK_WEBHOOK_SECRET"):
 
         # Get info from incoming request
         channel_id = request.form.get("channel_id")
@@ -60,7 +61,7 @@ def router():
         _logger.info("Incoming message from {0} on {1}: {2}".format(channel_id, user, message))
 
         # Parse and route
-        response = parse_message(message)
+        response = parse_message(message, user)
         slack_client = SlackClient(os.environ.get("SLACK_TOKEN"))
         slack_client.api_call(
             "chat.postMessage",
@@ -87,8 +88,7 @@ if __name__ == '__main__':
 
     loc = get_path(__file__) + '{0}'
     logger = get_default_root_logger(filename=loc.format('log/log.log'))
-
-    logger = get_canned_header(logger, 'LunchBot: Making Lunch Great Again!!!')
+    get_canned_header(logger, 'LunchBot: Making Lunch Great Again!!!')
 
     rm = Recommender()
 
