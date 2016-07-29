@@ -1,5 +1,7 @@
 
 import numpy as np
+import pickle
+
 from scipy.optimize import fmin_bfgs
 
 np.random.seed(42)  # 42 is the answer
@@ -20,6 +22,13 @@ class Recommender(object):
         self.means = np.nanmean(data.values, axis=1)
         self.y = data.values - np.reshape(self.means, (self.means.shape[0], 1))
 
+    def load_pre_trained_model(self, filepath):
+
+        with open(filepath, 'rb') as fp:
+            model = pickle.load(fp)
+
+        # let's just copy all the attributes from the loaded model into the current object. Surely that's not a bad idea
+        self.__dict__.update(model.__dict__)
 
     def _flatten_params(self, X, Theta):
 
@@ -42,14 +51,14 @@ class Recommender(object):
 
         return cost
 
-    def build(self):
+    def train(self):
 
         # initialize x, theta to small random values
         X = np.random.rand(self.n_items, self.n_features)
         Theta = np.random.rand(self.n_users, self.n_features)
 
         # build recommendation & learn weights
-        res = fmin_bfgs(self._compute_cost, self._flatten_params(X, Theta), args=(self.y, 1.))
+        res = fmin_bfgs(self._compute_cost, self._flatten_params(X, Theta), args=(self.y, .1))
         X, Theta = self._unflatten_params(res)
 
         self.X = X
@@ -64,6 +73,11 @@ class Recommender(object):
         recommendation = np.dot(self.Theta[icol, :], self.X[irow, :]) + self.means[irow]
         return recommendation
 
+    def save_model(self, filepath):
+
+        with open(filepath, 'wb') as fp:
+            pickle.dump(self, fp)
+
 
 if __name__ == '__main__':
 
@@ -74,4 +88,4 @@ if __name__ == '__main__':
 
     rm = Recommender()
     rm.load(data)
-    rm.build()
+    rm.train()
