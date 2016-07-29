@@ -20,6 +20,7 @@ def respond(channel):
         reader = DictReader(f, delimiter="|")
         quotes = list(reader)
     quote = choice(quotes)
+    print(quote)
 
     response = {
         "text": quote["quote"],
@@ -30,6 +31,7 @@ def respond(channel):
         ]
     }
     slack_client = SlackClient("xoxp-2334828949-3845128274-64329232069-800a97b447")
+    print("posting message to slack on channel {}".format(channel))
     slack_client.api_call(
         "chat.postMessage",
         channel=channel,
