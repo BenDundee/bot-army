@@ -1,8 +1,0 @@
-## This is how the config.private file should work
-## This file is unversioned, and should be stored on the server
-## and locally. Please do not version .private files!
-
-{
-    "SLACK_TOKEN": "THIS IS A SECRET",
-    "SLACK_WEBHOOK_SECRET": "THIS IS ANOTHER SECRET"
-}
