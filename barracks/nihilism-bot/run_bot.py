@@ -4,10 +4,7 @@ from csv import DictReader
 from flask import Flask, request, Response
 import os
 from random import choice
-from simplejson import dumps
 from slackclient import SlackClient
-
-from barracks.util import get_slack_creds
 
 
 app = Flask(__name__)
