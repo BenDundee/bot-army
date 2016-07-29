@@ -20,6 +20,7 @@ if __name__ == '__main__':
 
     rm = Recommender()
     rm.load_pre_trained_model(loc.format('data/model.pkl'))
+    rm.recommend_restuarant_for_group(['jjardel', 'staylor', 'chris'])
 
     app.run(debug=True)
 

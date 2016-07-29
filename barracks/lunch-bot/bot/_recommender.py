@@ -19,6 +19,9 @@ class Recommender(object):
 
     def load(self, data):
 
+        # restaurants with only a few ratings are heavily influencing results.  Let's drop them
+        data.dropna(axis=0, thresh=5, inplace=True)
+
         self.data = data
         self.n_items, self.n_users = data.shape
 
@@ -75,8 +78,15 @@ class Recommender(object):
     def get_rating(self, user, item):
 
         # predict a user's recommendation for a given restaurant
-        icol = self.data.columns.get_loc(user)
-        irow = self.data.index.get_loc(item)
+        try:
+            icol = self.data.columns.get_loc(user)
+        except KeyError:
+            raise Exception("User '{0}' is not in our database".format(user))
+
+        try:
+            irow = self.data.index.get_loc(item)
+        except KeyError:
+            raise Exception("Restuarant '{1}' is not in our database".format(item))
 
         rating = np.dot(self.Theta[icol, :], self.X[irow, :]) + self.means[irow]
         return rating
@@ -105,6 +115,24 @@ class Recommender(object):
             groups.append(group.tolist())
 
         return groups
+
+    def recommend_restuarant_for_group(self, group, n_suggestions=3):
+
+        # given a group of people, find the restaurants they collaboratively rate the highest
+
+        group_idx = [self.data.columns.get_loc(x) for x in group]
+
+        # compute all predictions
+        Y = np.matmul(self.X, self.Theta.T) + np.reshape(self.means, (self.means.shape[0], 1))
+        # take subset containing the users in this group
+        ys = Y[:, group_idx]
+
+        combined_ratings = ys.sum(axis=1)
+        top_n = np.argsort(-combined_ratings)[:n_suggestions]
+
+        names = self.data.index[top_n].values.tolist()
+
+        return names
 
 if __name__ == '__main__':
 
