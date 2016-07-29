@@ -1,3 +1,3 @@
-import pandas as pd
+from .bot import Recommender, DataLoader
 
 

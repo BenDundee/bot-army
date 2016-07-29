@@ -4,13 +4,16 @@ import pickle
 
 from scipy.optimize import fmin_bfgs
 
+from barracks.util import get_logger
+
 np.random.seed(42)  # 42 is the answer
 
 
 class Recommender(object):
 
-    def __init__(self, n_features=25):
+    def __init__(self, n_features=20):
 
+        self.logger = get_logger(__name__)
         self.n_features = n_features
 
     def load(self, data):
@@ -57,6 +60,8 @@ class Recommender(object):
         X = np.random.rand(self.n_items, self.n_features)
         Theta = np.random.rand(self.n_users, self.n_features)
 
+        self.logger.info('Training the model')
+
         # build recommendation & learn weights
         res = fmin_bfgs(self._compute_cost, self._flatten_params(X, Theta), args=(self.y, .1))
         X, Theta = self._unflatten_params(res)
@@ -64,16 +69,21 @@ class Recommender(object):
         self.X = X
         self.Theta = Theta
 
-    def recommend(self, user, item):
+        self.logger.info('Model successfully trained.')
+
+    def get_rating(self, user, item):
 
         # predict a user's recommendation for a given restaurant
         icol = self.data.columns.get_loc(user)
         irow = self.data.index.get_loc(item)
 
-        recommendation = np.dot(self.Theta[icol, :], self.X[irow, :]) + self.means[irow]
-        return recommendation
+        rating = np.dot(self.Theta[icol, :], self.X[irow, :]) + self.means[irow]
+        return rating
 
     def save_model(self, filepath):
+
+        self.logger.info('Writing model params to {0}'.format(filepath))
+        del self.logger  # for some reason, this is un-pickleable
 
         with open(filepath, 'wb') as fp:
             pickle.dump(self, fp)
@@ -82,7 +92,6 @@ class Recommender(object):
 if __name__ == '__main__':
 
     dataloader = DataLoader('/Users/jjardel/Work/bot-army/barracks/lunch-bot/data/survey_data.csv')
-    dataloader.load()
 
     data = dataloader.data
 

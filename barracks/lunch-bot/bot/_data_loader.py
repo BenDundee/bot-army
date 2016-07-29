@@ -1,10 +1,14 @@
 import pandas as pd
+from barracks.util import get_logger
 
 class DataLoader(object):
 
     def __init__(self, filepath):
 
+        self.logger = get_logger(__name__)
+
         self.filepath = filepath
+        self.load()
 
     def load(self):
         data = pd.read_csv(self.filepath, skiprows=5)
@@ -12,7 +16,9 @@ class DataLoader(object):
 
         self.data = data
 
+        self.logger.info('Data successfully loaded')
+
+
 if __name__ == '__main__':
 
     dl = DataLoader('/Users/jjardel/Work/bot-army/barracks/lunch-bot/data/survey_data.csv')
-    print('break')
