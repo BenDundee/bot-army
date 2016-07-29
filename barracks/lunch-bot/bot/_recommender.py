@@ -118,7 +118,7 @@ class Recommender(object):
 
         return groups
 
-    def recommend_restuarant_for_group(self, group, n_suggestions=3):
+    def recommend_restaurant_for_group(self, group, n_suggestions=3):
 
         # given a group of people, find the restaurants they collaboratively rate the highest
 
@@ -138,10 +138,11 @@ class Recommender(object):
 
 if __name__ == '__main__':
 
-    dataloader = DataLoader('/Users/jjardel/Work/bot-army/barracks/lunch-bot/data/survey_data.csv')
+    """dataloader = DataLoader('/Users/jjardel/Work/bot-army/barracks/lunch-bot/data/survey_data.csv')
 
     data = dataloader.data
 
     rm = Recommender()
     rm.load(data)
-    rm.train()
+    rm.train()"""
+    pass

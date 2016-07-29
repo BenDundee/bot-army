@@ -18,7 +18,7 @@ def find_optimal_groups(recommender):
 
 
 def find_optimal_restaurant(recommender, users):
-    result = recommender.find_optimal_restaurants(users)
+    result = recommender.recommend_restaurant_for_group(users)
     return{
         "text": "The following three restaurants are all highly recommended! Please vote!",
         "attachments": [{"text": r} for r in result]
@@ -46,4 +46,7 @@ def responses(call, recommender, **kwargs):
             "Response {0} is unsupported. Please choose one of:\n{1}"
             .format(call, get_bulleted_list(__REGISTRY.keys()))
         )
-    return __REGISTRY[call](recommender, kwargs)
+    if kwargs:
+        return __REGISTRY[call](recommender, kwargs)
+    else:
+        return __REGISTRY[call](recommender)
