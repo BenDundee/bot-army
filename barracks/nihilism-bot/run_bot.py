@@ -4,10 +4,8 @@ from csv import DictReader
 from flask import Flask, request, Response
 import os
 from random import choice
-from simplejson import dumps
 from slackclient import SlackClient
-
-from barracks.util import get_slack_creds
+from simplejson import dumps
 
 
 app = Flask(__name__)
@@ -23,6 +21,7 @@ def respond(channel):
         reader = DictReader(f, delimiter="|")
         quotes = list(reader)
     quote = choice(quotes)
+    print(quote)
 
     response = {
         "text": quote["quote"],
@@ -32,7 +31,8 @@ def respond(channel):
             }
         ]
     }
-    slack_client = SlackClient("xoxp-2334828949-3845128274-64329232069-800a97b447")
+    slack_client = SlackClient(os.environ.get("SLACK_TOKEN"))
+    print("posting message to slack on channel {}".format(channel))
     slack_client.api_call(
         "chat.postMessage",
         channel=channel,
@@ -44,7 +44,7 @@ def respond(channel):
 
 @app.route('/slack', methods=['POST'])
 def inbound():
-    if request.form.get("token") == "WFoQyt5m3iwKqu9ieXZ5AaKu":
+    if request.form.get("token") == os.environ.get("SLACK_WEBHOOK_SECRET"):
 
         # get incoming channel
         channel = request.form.get("channel_id")
@@ -56,4 +56,5 @@ def inbound():
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)
