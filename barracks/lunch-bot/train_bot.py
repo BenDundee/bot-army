@@ -1,4 +1,4 @@
-from bot import DataLoader, Recommender
+from .bot import DataLoader, Recommender
 from barracks.util import get_canned_header, get_logger, get_default_root_logger, get_path
 
 # call train_bot.py if you need to train the model.
