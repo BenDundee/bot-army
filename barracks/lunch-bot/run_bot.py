@@ -1,4 +1,4 @@
-from .bot import Recommender, responses
+from .bot import Recommender, responses, DataLoader
 from barracks.util import get_canned_header, get_logger, get_default_root_logger, get_path
 
 from flask import request, Response, Flask
@@ -7,8 +7,6 @@ import os
 
 app = Flask(__name__)
 BASE_PATH = os.path.dirname(os.path.realpath(__file__))
-
-
 MY_BOT_IS_CALLED = "lunch-bot"
 
 
@@ -94,8 +92,19 @@ if __name__ == '__main__':
 
     rm = Recommender()
 
-    logger.info("Loading pre-trained model")
-    rm.load_pre_trained_model(loc.format('data/model.pkl'))
+    logger.info("Attempting to load pre-trained model")
+    model_location = loc.format('assets/model.pkl')
+    if os.path.isfile(model_location):
+        logger.info("Found pre-trained model at {}".format(model_location))
+        rm.load_pre_trained_model(loc.format('assets/model.pkl'))
+    else:
+        logger.info("No trained model found, attempting to build model now...")
+
+        data_location = loc.format("assets/data.csv")
+        logger.info("Attempting to load data from {}".format(data_location))
+        data = DataLoader(data_location)
+        rm.load(data)
+        rm.train()
 
     logger.info("Running app...")
     port = int(os.environ.get('PORT', 5000))

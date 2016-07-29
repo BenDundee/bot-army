@@ -7,6 +7,8 @@ from sklearn.cluster import KMeans
 
 from barracks.util import get_logger
 
+from ._data_loader import DataLoader
+
 np.random.seed(42)  # 42 is the answer
 
 
