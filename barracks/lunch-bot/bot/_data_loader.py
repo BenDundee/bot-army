@@ -8,6 +8,7 @@ class DataLoader(object):
 
     def load(self):
         data = pd.read_csv(self.filepath, skiprows=5)
+        data.set_index('Restaurant', inplace=True)
 
         self.data = data
 
