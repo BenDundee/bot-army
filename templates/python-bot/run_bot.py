@@ -1,10 +1,9 @@
 #!
-from flask import Flask, request, Response
 import os
-from slackclient import SlackClient
 
 from barracks.util import get_slack_creds
-
+from flask import Flask, request, Response
+from slackclient import SlackClient
 
 app = Flask(__name__)
 BASE_PATH = os.path.dirname(os.path.realpath(__file__))

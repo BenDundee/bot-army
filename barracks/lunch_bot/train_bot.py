@@ -1,5 +1,6 @@
+from barracks.util import get_canned_header, get_default_root_logger, get_path
+
 from .bot import DataLoader, Recommender
-from barracks.util import get_canned_header, get_logger, get_default_root_logger, get_path
 
 # call train_bot.py if you need to train the model.
 # Save the trained results to disk so run_bot.py can simply load the model.

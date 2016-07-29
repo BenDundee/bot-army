@@ -1,13 +1,9 @@
-
-import numpy as np
 import pickle
 
+import numpy as np
+from util  import get_logger
 from scipy.optimize import fmin_bfgs
 from sklearn.cluster import KMeans
-
-from barracks.util import get_logger
-
-from ._data_loader import DataLoader
 
 np.random.seed(42)  # 42 is the answer
 

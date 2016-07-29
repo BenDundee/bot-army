@@ -1,9 +1,9 @@
-from bot import Recommender, responses, DataLoader
-from barracks.util import get_canned_header, get_logger, get_default_root_logger, get_path
+import os
 
+from util import get_canned_header, get_logger, get_default_root_logger, get_path
+from bot import Recommender, responses, DataLoader
 from flask import request, Response, Flask
 from slackclient import SlackClient
-import os
 
 app = Flask(__name__)
 BASE_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -28,8 +28,11 @@ def return_help(user):
 def parse_message(msg, user):
 
     bits = msg.split(' ')
+    if len(bits) < 2:
+        out = return_help(user)
+
     # Assume: lunch-bot rating <restaurant_name>
-    if bits[1] == 'rating':
+    elif bits[1] == "ratings":
         out = responses("get_rating", recommender=rm, user=user, restaurant=' '.join(bits[2:]))
 
     # Assume: lunch-bot find optimal groups
@@ -48,6 +51,13 @@ def parse_message(msg, user):
     return out
 
 
+def fail(exception, user):
+    return{
+        "text": "Sorry, @{user}. lucnh-bot could not understand your request. It failed because {ex}"
+            .format(user=user, ex=exception)
+    }
+
+
 @app.route("/slack-bot", methods=["POST"])
 def router():
 
@@ -61,7 +71,10 @@ def router():
         _logger.info("Incoming message from {0} on {1}: {2}".format(channel_id, user, message))
 
         # Parse and route
-        response = parse_message(message, user)
+        try:
+            response = parse_message(message, user)
+        except Exception as e:
+            response = fail(e, user)
         slack_client = SlackClient(os.environ.get("SLACK_TOKEN"))
         slack_client.api_call(
             "chat.postMessage",

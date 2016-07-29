@@ -1,5 +1,6 @@
 import pandas as pd
-from barracks.util import get_logger
+from util import get_logger
+
 
 class DataLoader(object):
 

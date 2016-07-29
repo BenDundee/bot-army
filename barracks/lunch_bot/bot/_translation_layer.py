@@ -1,12 +1,15 @@
 #!
-from barracks.util import get_bulleted_list
+from util  import get_bulleted_list
+
 from ._recommender import Recommender
 
 
 def get_rating(recommender, user, restaurant):
     result = recommender.get_rating(user, restaurant)
-    return "{restaurant} is a {rating:.1f}-star resaurant according to @{user} "\
+    return {
+        "text": "@{user}: lunch-bot believes your rating of {restaurant} would be {rating:.1f}-star restaurant."\
         .format(user=user, restaurant=restaurant, rating=result)
+    }
 
 
 def find_optimal_groups(recommender):
@@ -47,6 +50,6 @@ def responses(call, recommender, **kwargs):
             .format(call, get_bulleted_list(__REGISTRY.keys()))
         )
     if kwargs:
-        return __REGISTRY[call](recommender, kwargs)
+        return __REGISTRY[call](recommender, **kwargs)
     else:
         return __REGISTRY[call](recommender)
