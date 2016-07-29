@@ -122,7 +122,7 @@ class Recommender(object):
 
         # given a group of people, find the restaurants they collaboratively rate the highest
 
-        group_idx = [self.data.columns.get_loc(x) for x in group]
+        group_idx = [self.data.columns.get_loc(x) for x in group if x in self.data.columns]
 
         # compute all predictions
         Y = np.matmul(self.X, self.Theta.T) + np.reshape(self.means, (self.means.shape[0], 1))
