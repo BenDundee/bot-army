@@ -4,18 +4,25 @@ from ._recommender import Recommender
 
 
 def get_rating(recommender, user, restaurant):
-    return recommender.get_rating(user, restaurant)
+    result = recommender.get_rating(user, restaurant)
+    return "{restaurant} is a {rating:.1f}-star resaurant according to @{user} "\
+        .format(user=user, restaurant=restaurant, rating=result)
 
 
 def find_optimal_groups(recommender):
-    return recommender.find_optimal_groups()
+    result = recommender.find_optimal_groups()
+    return {
+        "text": "The following groups are optimal:",
+        "attachments": [{"text": ", ".join(r)} for r in result]
+    }
 
 
 def find_optimal_restaurant(recommender, users):
-    try:
-        return recommender.find_optimal_restaurants(users)
-    except Exception:
-        raise NotImplementedError("Not implemented yet")
+    result = recommender.find_optimal_restaurants(users)
+    return{
+        "text": "The following three restaurants are all highly recommended! Please vote!",
+        "attachments": [{"text": r} for r in result]
+    }
 
 
 __REGISTRY = {
@@ -39,4 +46,4 @@ def responses(call, recommender, **kwargs):
             "Response {0} is unsupported. Please choose one of:\n{1}"
             .format(call, get_bulleted_list(__REGISTRY.keys()))
         )
-    return __REGISTRY[call](kwargs)
+    return __REGISTRY[call](recommender, kwargs)
