@@ -6,7 +6,6 @@ import os
 from slackclient import SlackClient
 
 
-
 def get_slack_creds(base_path):
     """
     Store config.private files in your bot's config folder--make sure they are .gitignore'd.
