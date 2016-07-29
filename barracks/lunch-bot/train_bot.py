@@ -12,14 +12,14 @@ if __name__ == '__main__':
 
     logger = get_canned_header(logger, 'Training LunchBot')
 
-    dl = DataLoader(loc.format('data/survey_data.csv'))
+    dl = DataLoader(loc.format('assets/survey_data.csv'))
 
     # load and train recommender
     recommender = Recommender()
     recommender.load(dl.data)
     recommender.train()
 
-    recommender.save_model(loc.format('data/model.pkl'))
+    recommender.save_model(loc.format('assets/model.pkl'))
 
 
 
