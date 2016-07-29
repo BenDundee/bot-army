@@ -3,6 +3,7 @@ import numpy as np
 import pickle
 
 from scipy.optimize import fmin_bfgs
+from sklearn.cluster import KMeans
 
 from barracks.util import get_logger
 
@@ -88,6 +89,22 @@ class Recommender(object):
         with open(filepath, 'wb') as fp:
             pickle.dump(self, fp)
 
+    def find_optimal_groups(self, n_groups=4):
+
+        km = KMeans(n_clusters=n_groups, random_state=42)
+        km.fit(self.Theta)
+
+        names = self.data.columns
+        predictions = km.predict(self.Theta)
+
+        groups = []
+        for i in range(n_groups):
+            group_inds = np.where(predictions == i)
+            group = names[group_inds]
+
+            groups.append(group.tolist())
+
+        return groups
 
 if __name__ == '__main__':
 

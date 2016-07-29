@@ -1,6 +1,15 @@
 from bot import Recommender
 from barracks.util import get_canned_header, get_logger, get_default_root_logger, get_path
 
+from flask import Request, Response, Flask
+from slackclient import SlackClient
+import os
+
+app = Flask(__name__)
+BASE_PATH = os.path.dirname(os.path.realpath(__file__))
+
+
+MY_BOT_IS_CALLED = "lunch-bot"
 
 if __name__ == '__main__':
 
@@ -11,5 +20,7 @@ if __name__ == '__main__':
 
     rm = Recommender()
     rm.load_pre_trained_model(loc.format('data/model.pkl'))
+
+    app.run(debug=True)
 
     print("break")
